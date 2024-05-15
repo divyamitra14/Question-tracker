@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOD Login - Question Paper Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    /* Reset default browser styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4; /* Light background color */
+    }
+
+    header {
+      background-color: #333; /* Dark header background */
+      color: #fff; /* Header text color */
+      padding: 20px;
+      text-align: center;
+    }
+
+    .logo img {
+      max-width: 150px; /* Limit logo size */
+      height: auto;
+    }
+
+    h2 {
+      font-size: 1.2rem; /* Subtitle font size */
+      margin-top: 10px;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 140px); /* Center login container vertically */
+    }
+
+    .login-container {
+      background-color: #fff; /* White container background */
+      padding: 30px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 1.5rem; /* Form title font size */
+      margin-bottom: 20px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    button {
+      background-color: #007bff; /* Primary button color */
+      color: #fff; /* Button text color */
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3; /* Button hover color */
+    }
+
+    .forgot-password {
+      display: block;
+      margin-top: 10px;
+      color: #007bff; /* Link color */
+      text-decoration: none;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline; /* Underline link on hover */
+    }
+
+    footer {
+      background-color: #333; /* Dark footer background */
+      color: #fff; /* Footer text color */
+      padding: 20px;
+      text-align: center;
+    }
+
+    .footer-links a {
+      color: #fff; /* Footer link color */
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    i{
+      font-size: 40px;
+      width: 90px;
+      height: 50px;
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <!-- Your application logo -->
+    <img src="logo.png" alt="Question Paper Tracker">
+  </div>
+  <h2>Welcome, Head Of Department!</h2>
+  <p>Login to track all the question papers effortlessly</p>
+
+</header>
+<main>
+  <div class="login-container">
+    <h3>Head Of Department Login</h3>
+    <form>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit"><a href="http://localhost:63342/question%20tracker/designs/hod%20panel.html?_ijt=e7dhkna0ngp2kojiukur99baa4">Login</a></button>
+    </form>
+    <a href="#" class="forgot-password">Forgot Password?</a>
+    <p>Don't Have an account? <a href="#">Create New</a></p>
+  </div>
+</main>
+<footer>
+  <div class="footer-links">
+    <!-- Essential links -->
+    <a href="#">About Us</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy Policy</a>
+  </div>
+  <div class="social-icons">
+    <!-- Social media icons -->
+    <a href="#"><i class='bx bxl-facebook-circle'></i></a>
+    <a href="#"><i class='bx bxl-twitter'></i></a>
+    <a href="#"><i class='bx bxl-linkedin' ></i></a>
+  </div>
+</footer>
+</body>
+</html>
