@@ -4,40 +4,44 @@ const port=process.env.PORT || 3000
 const hbs=require("hbs")
 const path=require("path")
 const views_path=path.join(__dirname,"../template/views")
+const uploads_path = path.join(__dirname, '../uploads');
 const body_parser=require("body-parser")
 require("./db/connection")
 const hodLogin=require("./models/HODSchema")
 const profLogin = require("./models/professorSchema");
 const submit=require("./models/submissions")
-// const multer = require('multer');
+const multer = require('multer');
+const fs = require("fs");
+const XLSX = require("xlsx");
 
 web.use(body_parser.json())
 web.use(body_parser.urlencoded({extended:false}))
 
 web.use("/image",express.static(path.join(__dirname,"../template/public/assets/image")))
-
+web.use('/uploads', express.static(uploads_path));
+// web.use("/uploads",express.static(path.join(__dirname,"../uploads")));
 
 web.set("view engine","hbs")
 web.set("views",views_path)
 
+if (!fs.existsSync(uploads_path)) {
+    fs.mkdirSync(uploads_path);
+}
 web.listen(port,()=>{
     console.log(`app running in port: ${port}`)
     console.log(views_path);
 })
 
-// web.use("/upload",express.static(path.join(__dirname,"../upload")));
-//
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb)=> {
-//         cb(null, 'upload/');
-//     },
-//     filename: function (req, file, cb) {
-//         console.log(file)
-//         cb(null, Date.now() + path.extname(file.originalname));
-//     }
-//
-// });
-// const upload = multer({storage : storage});
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploads_path);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 web.get("/home",(req,res) =>{
     res.render("HOME")
@@ -75,31 +79,37 @@ web.post("/proflogin", async (req, res) => {
     }
 });
 
-web.post("/save",async (req,res)=>{
+web.post("/save", upload.single("questionPaper"), async (req, res) => {
     try {
-        // const filepath=req.file.path
+        if (!req.file) {
+            return res.send('<script>alert("File upload failed. Please try again."); window.location="/papersubmit";</script>');
+        }
         const submitData = new submit({
             title: req.body.title,
             Prof_name: req.body.Prof_name,
+            branch:req.body.branch,
             subject: req.body.subject,
             subCode: req.body.subCode,
             date: req.body.date,
-            questionPaper: req.body.questionPaper
-            // questionPaper: req.body.filename
-        })
-        const data = await submitData.save()
+            questionPaper: req.file.filename
+        });
+        await submitData.save();
         res.send('<script>alert("Submission successful!"); window.location="/home";</script>');
-    }
-    catch (e){
+    } catch (e) {
         console.error(e);
         res.status(500).send("Internal Server Error");
     }
-
-})
-// web.get('/uploads/:filename', (req, res) => {
-//     const filename = req.params.filename;
-//     res.sendFile(path.join(__dirname, "uploads", filename));
-// });
+});
+web.get('/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(uploads_path, filename);
+    res.sendFile(filepath, (err) => {
+        if (err) {
+            console.error("Error sending file:", err);
+            res.status(404).send("File not found");
+        }
+    });
+});
 
 web.get("/hodHome",(req,res)=>{
     res.render("HODhome")
@@ -248,3 +258,44 @@ web.post("/reg", async (req, res) => {
     }
 });
 
+web.get("/downloadHODData", async (req, res) => {
+    try {
+        const submissions = await submit.find();
+        if (submissions && submissions.length > 0) {
+            // Prepare the data for the Excel file
+            const data = submissions.map(sub => ({
+                Title: sub.title,
+                ProfessorName: sub.Prof_name,
+                Branch:sub.branch,
+                Subject: sub.subject,
+                SubjectCode: sub.subCode,
+                Date: sub.date,
+                QuestionPaper: sub.questionPaper
+            }));
+
+            // Convert the data to a worksheet
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
+
+            // Write the workbook to a file
+            const filePath = path.join(__dirname, "submissions.xlsx");
+            XLSX.writeFile(workbook, filePath);
+
+            // Send the file to the client
+            res.download(filePath, "submissions.xlsx", (err) => {
+                if (err) {
+                    console.error("Error downloading the file:", err);
+                    res.status(500).send("Error downloading the file");
+                }
+                // Optionally, delete the file after sending it to the client
+                fs.unlinkSync(filePath);
+            });
+        } else {
+            res.status(404).send("No submissions found in the database");
+        }
+    } catch (error) {
+        console.error("Error generating Excel file:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});

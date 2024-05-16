@@ -107,6 +107,22 @@
             height: 50px;
             color: white;
         }
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin-left: 40%;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
 
     </style>
 </head>
@@ -124,10 +140,12 @@
             <tr>
                 <th>Title</th>
                 <th>Professor</th>
+                <th>Branch</th>
                 <th>Subject</th>
                 <th>Subject Code</th>
                 <th>Date Submitted</th>
                 <th> Question Paper</th>
+                <th>Download</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -138,15 +156,12 @@
                         <input name="id" hidden="hidden" type="text" value="{{this._id}}" >
                         <td>{{this.title}}</td>
                         <td>{{this.Prof_name}}</td>
+                        <td>{{this.branch}}</td>
                         <td>{{this.subject}}</td>
                         <td>{{this.subCode}}</td>
                         <td>{{this.date}}</td>
-<!--                        {{#if questionPaper}}-->
-<!--                            <td>-->
-<!--                                <img src="upload/{{this.questionPaper}}"  alt="doc" >-->
-<!--                            </td>-->
-<!--                        {{/if}}-->
                         <td>{{this.questionPaper}}</td>
+                        <td><a href="/uploads/{{this.questionPaper}}" download>Download</a></td>
                         <td> <input class="review-button" type="submit" value="Delete"></td>
                     </tr>
                 </form>
@@ -154,6 +169,8 @@
             </tbody>
         </table>
     </div>
+    <br>
+    <a href="/downloadHODData" class="download-btn">Download as Excel</a>
 </main>
 <footer>
     <div class="footer-links">
